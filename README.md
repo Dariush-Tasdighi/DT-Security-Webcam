@@ -1,8 +1,8 @@
 # From https://www.python.org site:
 
-    Download and Install the latest version of Python
+- Download and Install the latest version of Python
 
-# Open PowerShell command in Windows:
+# Open PowerShell prompt in Windows:
 
 ### For the first time (You must have internet connection), run below command:
 

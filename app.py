@@ -1,11 +1,12 @@
 # **************************************************
 # دوربین امنیتی
-# Version 2.3
+# Version 2.4
 # **************************************************
 import os
 import time
 import cv2 as cv
 import numpy as np
+from colorama import Fore
 from datetime import datetime
 
 # Initial Settings
@@ -60,7 +61,7 @@ if not webcam.isOpened():
 
 print_current_webcam_settings()
 if max_resolution:
-    change_webcam_resolution(10_000, 10_000)
+    change_webcam_resolution(width=20_000, height=20_000)
     print_current_webcam_settings()
 
 last_frame = None
@@ -70,39 +71,44 @@ time.sleep(9)
 while True:
     time.sleep(1)
 
-    result, frame_original = webcam.read()
+    result, original_frame = webcam.read()
 
     if result:
         now = datetime.now()
         formated_now = now.strftime(format="%Y_%m_%d_%H_%M_%S")
 
-        frame_grayscale = cv.cvtColor(src=frame_original, code=cv.COLOR_BGR2GRAY)
+        grayscale_frame = cv.cvtColor(src=original_frame, code=cv.COLOR_BGR2GRAY)
 
         if display_frames:
-            cv.imshow(winname="Webcam", mat=frame_original)
+            cv.imshow(winname="Webcam", mat=original_frame)
 
         if last_frame is None:
-            last_frame = frame_grayscale
+            last_frame = grayscale_frame
             continue
 
-        difference = get_difference(image1=frame_grayscale, image2=last_frame)
+        difference = get_difference(image1=grayscale_frame, image2=last_frame)
 
         if display_difference:
             print(difference)
 
         if difference > sensitivity:
             if display_notification:
-                print(f"{formated_now}: Motion Detected!")
+                print(f"{Fore.RED}{formated_now}: Motion Detected!{Fore.RESET}")
 
             filename = f"Capture_{formated_now}.png"
             pathname = f"{path}\\{filename}"
 
             if display_brand:
                 formated_now = now.strftime(format="%Y/%m/%d %H:%M:%S")
+
+                brand = (
+                    f"Dariush Tasdighi - 09121087461 - @IranianExperts - {formated_now}"
+                )
+
                 cv.putText(
-                    img=frame_original,
-                    text=f"Dariush Tasdighi - 09121087461 - @IranianExperts - {formated_now}",
-                    org=(10, frame_original.shape[0] - 15),
+                    img=original_frame,
+                    text=brand,
+                    org=(10, original_frame.shape[0] - 15),
                     fontFace=cv.FONT_HERSHEY_SIMPLEX,
                     fontScale=1.0,
                     color=(0, 0, 255),
@@ -110,9 +116,9 @@ while True:
                     lineType=cv.LINE_4,
                 )
 
-            cv.imwrite(filename=pathname, img=frame_original)
+            cv.imwrite(filename=pathname, img=original_frame)
 
-        last_frame = frame_grayscale
+        last_frame = grayscale_frame
 
     key = cv.waitKey(delay=1)
     if key == ord("q") or key == ord("Q"):
