@@ -1,36 +1,17 @@
 # **************************************************
-# دوربین امنیتی
-# Version 2.5
+# DT Webcam Security
+# Version 2.6
 # نکته مهم و جالب
 # می‌کنیم نیز، کار می‌کند Lock این برنامه، حتی زمانی که سیستم را
+# با اجرای چند نسخه از این برنامه، می‌توان از چند وبکم استفاده کرد
 # **************************************************
 import os
 import time
 import cv2 as cv
+import constants
 import numpy as np
 from colorama import Fore
 from datetime import datetime
-
-# Initial Settings
-WEBCAM_INDEX = 0
-SENSITIVITY = 100
-PATH = "C:\\Captures"
-DISPLAY_BRAND = True
-MAX_RESOLUTION = True
-DISPLAY_FRAMES = True
-DISPLAY_DIFFERENCE = True
-INITIAL_DELAY_SECONDS = 10
-DISPLAY_NOTIFICATION = True
-
-# WEBCAM_INDEX = 0
-# SENSITIVITY = 100
-# PATH = "C:\\Captures"
-# DISPLAY_BRAND = True
-# MAX_RESOLUTION = True
-# DISPLAY_FRAMES = False
-# DISPLAY_DIFFERENCE = False
-# INITIAL_DELAY_SECONDS = 10
-# DISPLAY_NOTIFICATION = False
 
 
 def print_current_webcam_settings() -> None:
@@ -77,23 +58,23 @@ def check_motion_detection(
 ) -> None:
     difference = get_difference(frame1=new_grayscale_frame, frame2=last_grayscale_frame)
 
-    if DISPLAY_DIFFERENCE:
+    if constants.DISPLAY_FRAMES_DIFFERENCE:
         print(difference)
 
-    if difference < SENSITIVITY:
+    if difference < constants.SENSITIVITY:
         return
 
     now = datetime.now()
     formated_now = now.strftime(format="%Y_%m_%d_%H_%M_%S")
 
-    if DISPLAY_NOTIFICATION:
+    if constants.DISPLAY_NOTIFICATION:
         print(f"{Fore.RED}{formated_now}: Motion Detected!{Fore.RESET}")
 
     filename = f"Capture_{formated_now}.png"
-    pathname = f"{PATH}\\{filename}"
+    pathname = f"{constants.PATH}\\{filename}"
 
-    if DISPLAY_BRAND:
-        brand = f"Dariush Tasdighi - 09121087461 - @IranianExperts - {formated_now}"
+    if constants.DISPLAY_BRAND:
+        brand = f"{formated_now} - {int(difference)} - Dariush Tasdighi - @IranianExperts - 09121087461"
         write_text_on_frame(frame=new_frame, text=brand)
 
     cv.imwrite(filename=pathname, img=new_frame)
@@ -101,15 +82,15 @@ def check_motion_detection(
 
 os.system(command="cls")
 
-webcam = cv.VideoCapture(index=WEBCAM_INDEX)
+webcam = cv.VideoCapture(index=constants.WEBCAM_INDEX)
 if not webcam.isOpened():
     print("You do not have any webcam or it is not ready to use!")
     webcam.release()
     quit()
 
 print_current_webcam_settings()
-if MAX_RESOLUTION:
-    change_webcam_resolution(width=20_000, height=20_000)
+if constants.MAX_RESOLUTION:
+    change_webcam_resolution(width=1280, height=720)  # HD: 1280x720
     print_current_webcam_settings()
 
 last_grayscale_frame = None
@@ -127,11 +108,11 @@ while True:
             last_grayscale_frame = new_grayscale_frame
             continue
 
-        if DISPLAY_FRAMES:
+        if constants.DISPLAY_FRAMES:
             cv.imshow(winname="Webcam", mat=new_frame)
 
         difference_time = datetime.now() - start_time
-        if difference_time.total_seconds() < INITIAL_DELAY_SECONDS:
+        if difference_time.total_seconds() < constants.INITIAL_DELAY:
             cv.waitKey(delay=1)
             print("Initialization...")
         else:
