@@ -1,6 +1,6 @@
 # **************************************************
 # DT Webcam Security
-# Version 2.7
+# Version 2.8
 # نکته مهم و جالب
 # می‌کنیم نیز، کار می‌کند Lock این برنامه، حتی زمانی که سیستم را
 # با اجرای چند نسخه از این برنامه، می‌توان از چند وبکم استفاده کرد
@@ -50,7 +50,7 @@ def main() -> None:
             difference_time = datetime.now() - start_time
             if difference_time.total_seconds() < constants.INITIAL_DELAY:
                 cv.waitKey(delay=1)
-                print("{Fore.YELLOW}Initialization...{Fore.RESET}")
+                print(f"{Fore.YELLOW}Initialization...{Fore.RESET}")
             else:
                 functions.check_motion_detection(
                     new_frame=new_frame,

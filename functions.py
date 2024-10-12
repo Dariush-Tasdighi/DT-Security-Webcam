@@ -1,3 +1,4 @@
+import os
 import constants
 import cv2 as cv
 import numpy as np
@@ -63,13 +64,18 @@ def check_motion_detection(
         return
 
     now = datetime.now()
+    formated_today = now.strftime(format="%Y_%m_%d")
     formated_now = now.strftime(format="%Y_%m_%d_%H_%M_%S")
 
     if constants.DISPLAY_NOTIFICATION:
         print(f"{Fore.RED}{formated_now}: Motion Detected!{Fore.RESET}")
 
+    path = f"{constants.PATH}\\{formated_today}"
+    if not os.path.exists(path):
+        os.mkdir(path=path)
+
     filename = f"Capture_{formated_now}.png"
-    pathname = f"{constants.PATH}\\{filename}"
+    pathname = f"{path}\\{filename}"
 
     if constants.PUT_TEXT_ON_FRAME:
         text = get_text(formated_now=formated_now, difference=difference)

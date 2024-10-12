@@ -1,14 +1,14 @@
-WEBCAM_INDEX = 0
-SENSITIVITY = 120
-PATH = "C:\\Captures"
-MAX_RESOLUTION = True  # HD: 1280x720
+WEBCAM_INDEX: int = 0
+SENSITIVITY: int = 120
+PATH: str = "C:\\Captures"
+MAX_RESOLUTION: bool = True  # HD: 1280x720
 
-DISPLAY_FRAMES = True
-PUT_TEXT_ON_FRAME = True
-DISPLAY_NOTIFICATION = True
-DISPLAY_FRAMES_DIFFERENCE = True
+DISPLAY_FRAMES: bool = True
+PUT_TEXT_ON_FRAME: bool = True
+DISPLAY_NOTIFICATION: bool = True
+DISPLAY_FRAMES_DIFFERENCE: bool = True
 
-INITIAL_DELAY = 10  # Second(s)
-CAPTURE_INTERVAL = 1  # Second(s)
+INITIAL_DELAY: int = 10  # Second(s)
+CAPTURE_INTERVAL: int = 1  # Second(s)
 
-BRAND = "Dariush Tasdighi - @IranianExperts - 09121087461"
+BRAND: str = "Dariush Tasdighi - @IranianExperts - 09121087461"
