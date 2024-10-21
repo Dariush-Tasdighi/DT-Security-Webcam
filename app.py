@@ -1,7 +1,8 @@
-# **************************************************
-# DT Webcam Security
-# Version 2.9
-# **************************************************
+"""
+DT Webcam Security
+Version 3.0
+"""
+
 import os
 import time
 import cv2 as cv
@@ -12,6 +13,9 @@ from datetime import datetime
 
 
 def main() -> None:
+    """
+    Main Function
+    """
     try:
         os.system(command="cls")
 
@@ -23,33 +27,35 @@ def main() -> None:
             quit()
 
         functions.print_current_webcam_settings(webcam=webcam)
-        if constants.MAX_RESOLUTION:
+        if constants.USE_HD_RESOLUTION:
             functions.change_webcam_resolution(webcam=webcam, width=1280, height=720)
             functions.print_current_webcam_settings(webcam=webcam)
 
-        last_grayscale_frame = None
-        start_time = datetime.now()
+        last_grayscale_frame: cv.Mat = None
+        start_time: datetime = datetime.now()
 
         while True:
-            time.sleep(1)
+            time.sleep(constants.CAPTURE_INTERVAL)
 
             success, new_frame = webcam.read()
 
             if success:
-                new_grayscale_frame = cv.cvtColor(src=new_frame, code=cv.COLOR_BGR2GRAY)
-
-                if last_grayscale_frame is None:
-                    last_grayscale_frame = new_grayscale_frame
-                    continue
+                new_grayscale_frame: cv.Mat = cv.cvtColor(
+                    src=new_frame, code=cv.COLOR_BGR2GRAY
+                )
 
                 if constants.DISPLAY_FRAMES:
                     cv.imshow(winname="Webcam", mat=new_frame)
 
-                difference_time = datetime.now() - start_time
+                difference_time: datetime = datetime.now() - start_time
                 if difference_time.total_seconds() < constants.INITIAL_DELAY:
                     cv.waitKey(delay=1)
                     print(f"{Fore.YELLOW}Initialization...{Fore.RESET}")
                 else:
+                    if last_grayscale_frame is None:
+                        last_grayscale_frame = new_grayscale_frame
+                        continue
+
                     functions.check_motion_detection(
                         new_frame=new_frame,
                         new_grayscale_frame=new_grayscale_frame,
@@ -61,7 +67,7 @@ def main() -> None:
             key = cv.waitKey(delay=1)
             if key == ord("q") or key == ord("Q"):
                 break
-    except KeyboardInterrupt:
+    except KeyboardInterrupt:  # Ctrl + C
         pass
     finally:
         webcam.release()

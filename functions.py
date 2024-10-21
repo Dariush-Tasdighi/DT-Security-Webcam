@@ -1,3 +1,7 @@
+"""
+Define Global Functions
+"""
+
 import os
 import constants
 import cv2 as cv
@@ -7,29 +11,45 @@ from datetime import datetime
 
 
 def print_current_webcam_settings(webcam: cv.VideoCapture) -> None:
-    fps = webcam.get(propId=cv.CAP_PROP_FPS)
-    width = webcam.get(propId=cv.CAP_PROP_FRAME_WIDTH)
-    height = webcam.get(propId=cv.CAP_PROP_FRAME_HEIGHT)
+    """
+    Print Current Webcam Settings
+    """
+
+    fps: float = webcam.get(propId=cv.CAP_PROP_FPS)
+    width: float = webcam.get(propId=cv.CAP_PROP_FRAME_WIDTH)
+    height: float = webcam.get(propId=cv.CAP_PROP_FRAME_HEIGHT)
 
     print(f"Current webcam FPS: {fps}")
     print(f"Current webcam Resolution: {width} * {height}")
 
 
 def change_webcam_resolution(webcam: cv.VideoCapture, width: int, height: int) -> None:
+    """
+    Change Webcam Resolution
+    """
+
     webcam.set(propId=cv.CAP_PROP_FRAME_WIDTH, value=width)
     webcam.set(propId=cv.CAP_PROP_FRAME_HEIGHT, value=height)
 
 
 def get_difference(frame1: cv.Mat, frame2: cv.Mat) -> float:
-    frame1_mean = np.mean(a=frame1)
-    frame2_mean = np.mean(a=frame2)
-    difference = np.abs(frame1_mean - frame2_mean) * 100
+    """
+    Get Two Frames Difference
+    """
+
+    frame1_mean: float = np.mean(a=frame1)
+    frame2_mean: float = np.mean(a=frame2)
+    difference: float = np.abs(frame1_mean - frame2_mean) * 100
 
     return difference
 
 
-def write_text_on_frame(frame: cv.Mat, text: str) -> None:
-    frame_height = frame.shape[0]
+def write_text_on_frame(text: str, frame: cv.Mat) -> None:
+    """
+    Write Text On Frame
+    """
+
+    frame_height: float = frame.shape[0]
 
     cv.putText(
         img=frame,
@@ -44,9 +64,14 @@ def write_text_on_frame(frame: cv.Mat, text: str) -> None:
 
 
 def get_text(formated_now: str, difference: float) -> str:
-    result = f"{formated_now} - {int(difference)}"
+    """
+    Get Text
+    """
+
+    result: str = f"{formated_now} - {int(difference)}"
     if constants.BRAND != "":
-        result += f" - {constants.BRAND}"
+        result = f"{result} - {constants.BRAND}"
+
     return result
 
 
@@ -55,30 +80,40 @@ def check_motion_detection(
     new_grayscale_frame: cv.Mat,
     last_grayscale_frame: cv.Mat,
 ) -> None:
-    difference = get_difference(frame1=new_grayscale_frame, frame2=last_grayscale_frame)
+    """
+    Check Motion Detection
+    """
+
+    difference: float = get_difference(
+        frame1=new_grayscale_frame, frame2=last_grayscale_frame
+    )
+
+    now: datetime = datetime.now()
+    formated_today: str = now.strftime(format="%Y_%m_%d")
+    formated_now: str = now.strftime(format="%Y_%m_%d_%H_%M_%S")
 
     if constants.DISPLAY_FRAMES_DIFFERENCE:
-        print(difference)
+        print(f"{formated_now}: {int(difference)}")
 
     if difference < constants.SENSITIVITY:
         return
 
-    now = datetime.now()
-    formated_today = now.strftime(format="%Y_%m_%d")
-    formated_now = now.strftime(format="%Y_%m_%d_%H_%M_%S")
-
     if constants.DISPLAY_NOTIFICATION:
         print(f"{Fore.RED}{formated_now}: Motion Detected!{Fore.RESET}")
 
-    path = f"{constants.PATH}\\{formated_today}"
+    path: str = f"{constants.PATH}\\{formated_today}"
     if not os.path.exists(path):
         os.mkdir(path=path)
 
-    filename = f"Capture_{formated_now}.png"
-    pathname = f"{path}\\{filename}"
+    filename: str = f"Capture_{formated_now}.png"
+    pathname: str = f"{path}\\{filename}"
 
     if constants.PUT_TEXT_ON_FRAME:
         text = get_text(formated_now=formated_now, difference=difference)
-        write_text_on_frame(frame=new_frame, text=text)
+        write_text_on_frame(text=text, frame=new_frame)
 
     cv.imwrite(filename=pathname, img=new_frame)
+
+
+if __name__ == "__main__":
+    print("This file is library file and you can not run it!")
