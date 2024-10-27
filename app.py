@@ -1,6 +1,6 @@
 """
 DT Webcam Security
-Version 3.0
+Version 3.1
 """
 
 import os
@@ -49,7 +49,6 @@ def main() -> None:
 
                 difference_time: datetime = datetime.now() - start_time
                 if difference_time.total_seconds() < constants.INITIAL_DELAY:
-                    cv.waitKey(delay=1)
                     print(f"{Fore.YELLOW}Initialization...{Fore.RESET}")
                 else:
                     if last_grayscale_frame is None:

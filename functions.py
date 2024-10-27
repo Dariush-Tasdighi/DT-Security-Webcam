@@ -15,9 +15,9 @@ def print_current_webcam_settings(webcam: cv.VideoCapture) -> None:
     Print Current Webcam Settings
     """
 
-    fps: float = webcam.get(propId=cv.CAP_PROP_FPS)
-    width: float = webcam.get(propId=cv.CAP_PROP_FRAME_WIDTH)
-    height: float = webcam.get(propId=cv.CAP_PROP_FRAME_HEIGHT)
+    fps: int = int(webcam.get(propId=cv.CAP_PROP_FPS))
+    width: int = int(webcam.get(propId=cv.CAP_PROP_FRAME_WIDTH))
+    height: int = int(webcam.get(propId=cv.CAP_PROP_FRAME_HEIGHT))
 
     print(f"Current webcam FPS: {fps}")
     print(f"Current webcam Resolution: {width} * {height}")
@@ -32,7 +32,7 @@ def change_webcam_resolution(webcam: cv.VideoCapture, width: int, height: int) -
     webcam.set(propId=cv.CAP_PROP_FRAME_HEIGHT, value=height)
 
 
-def get_difference(frame1: cv.Mat, frame2: cv.Mat) -> float:
+def get_difference(frame1: cv.Mat, frame2: cv.Mat) -> int:
     """
     Get Two Frames Difference
     """
@@ -41,7 +41,7 @@ def get_difference(frame1: cv.Mat, frame2: cv.Mat) -> float:
     frame2_mean: float = np.mean(a=frame2)
     difference: float = np.abs(frame1_mean - frame2_mean) * 100
 
-    return difference
+    return int(difference)
 
 
 def write_text_on_frame(text: str, frame: cv.Mat) -> None:
@@ -49,7 +49,7 @@ def write_text_on_frame(text: str, frame: cv.Mat) -> None:
     Write Text On Frame
     """
 
-    frame_height: float = frame.shape[0]
+    frame_height: int = int(frame.shape[0])
 
     cv.putText(
         img=frame,
@@ -93,7 +93,7 @@ def check_motion_detection(
     formated_now: str = now.strftime(format="%Y_%m_%d_%H_%M_%S")
 
     if constants.DISPLAY_FRAMES_DIFFERENCE:
-        print(f"{formated_now}: {int(difference)}")
+        print(f"{formated_now}: {difference}")
 
     if difference < constants.SENSITIVITY:
         return
