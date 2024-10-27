@@ -1,4 +1,4 @@
-# Phylasopy
+# Philosophy
 
 - What is this course? and How is this syllabus? :-(
 
