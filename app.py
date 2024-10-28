@@ -1,6 +1,6 @@
 """
 DT Webcam Security
-Version 3.1
+Version 3.2
 """
 
 import os
